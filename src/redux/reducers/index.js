@@ -4,6 +4,7 @@ import {
   SAVE_NAME,
   SAVE_ASSERTIONS,
   SAVE_SCORE,
+  LOGIN,
 } from '../actions';
 
 // const INITIAL_STATE = {
@@ -40,6 +41,12 @@ const exampleReducer = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       score: action.payload,
+    };
+  case LOGIN:
+    return {
+      ...state,
+      gravatarEmail: action.payload,
+      name: action.payload,
     };
   default:
     return state;
