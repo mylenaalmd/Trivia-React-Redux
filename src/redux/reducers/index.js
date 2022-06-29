@@ -45,8 +45,7 @@ const exampleReducer = (state = INITIAL_STATE, action) => {
   case LOGIN:
     return {
       ...state,
-      gravatarEmail: action.payload,
-      name: action.payload,
+      ...action.payload,
     };
   default:
     return state;
