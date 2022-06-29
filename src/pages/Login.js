@@ -13,7 +13,7 @@ class Login extends React.Component {
       name: '',
       buttonDisabled: true,
       buttonEnable: false,
-    }
+    };
 
       enableButton = () => {
         const { name, email } = this.state;
@@ -22,7 +22,7 @@ class Login extends React.Component {
         } else {
           this.setState({ buttonDisabled: true });
         }
-      }
+      };
 
       handleChange= ({ target }) => {
         const { name, value } = target;
@@ -34,7 +34,7 @@ class Login extends React.Component {
           .then((response) => response.json())
           .then((data) => data);
         localStorage.setItem('token', responseApi.token);
-      }
+      };
 
       logClick = () => {
         const { history, loginUser } = this.props;
@@ -42,13 +42,13 @@ class Login extends React.Component {
         loginUser(name, email);
         this.requestApi();
         history.push('/game');
-      }
+      };
 
       logClickSet = () => {
         const { history } = this.props;
         this.logClick();
         history.push('/settings');
-      }
+      };
 
       render() {
         const { name, email, buttonDisabled, buttonEnable } = this.state;
