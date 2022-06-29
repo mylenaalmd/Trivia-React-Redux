@@ -33,7 +33,7 @@ class Login extends React.Component {
         const responseApi = await fetch('https://opentdb.com/api_token.php?command=request')
           .then((response) => response.json())
           .then((data) => data);
-        sessionStorage.setItem('token', responseApi.token);
+        localStorage.setItem('token', responseApi.token);
         // .catch((error) => error.toString());
         // return responseApi;
       }
