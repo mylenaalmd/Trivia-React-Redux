@@ -1,10 +1,10 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import logo from '../trivia.png';
+import logo from '../trivia.png';
 import { login } from '../redux/actions';
 
-// const minNum = 0;
+const minNum = 0;
 // const validEmail = /^[\w]+@[\w]+\.[a-z]/;
 
 class Login extends React.Component {
@@ -12,16 +12,17 @@ class Login extends React.Component {
       email: '',
       name: '',
       buttonDisabled: true,
-    }
+      buttonEnable: false,
+    };
 
       enableButton = () => {
         const { name, email } = this.state;
-        if (name.length && email.length) {
+        if (name.length > minNum && email.length > minNum) {
           this.setState({ buttonDisabled: false });
         } else {
           this.setState({ buttonDisabled: true });
         }
-      }
+      };
 
       handleChange= ({ target }) => {
         const { name, value } = target;
@@ -29,31 +30,34 @@ class Login extends React.Component {
       };
 
       requestApi = async () => {
-        // const { history } = this.props;
         const responseApi = await fetch('https://opentdb.com/api_token.php?command=request')
           .then((response) => response.json())
           .then((data) => data);
         localStorage.setItem('token', responseApi.token);
-        // .catch((error) => error.toString());
-        // return responseApi;
-      }
+      };
 
-      logClick = async () => {
-        const { loginUser, history } = this.props;
+      logClick = () => {
+        const { history, loginUser } = this.props;
         const { name, email } = this.state;
         loginUser(name, email);
         this.requestApi();
-        history.push('/carteira');
-      }
+        history.push('/game');
+      };
+
+      logClickSet = () => {
+        const { history } = this.props;
+        this.logClick();
+        history.push('/settings');
+      };
 
       render() {
-        const { name, email, buttonDisabled } = this.state;
+        const { name, email, buttonDisabled, buttonEnable } = this.state;
         return (
-          <div>
-            {/* <header className="App-header">
+          <div className="App-header">
+            <div>
               <img src={ logo } className="App-logo" alt="logo" />
               <p>SUA VEZ AGORA</p>
-            </header> */}
+            </div>
             <form>
               <label htmlFor="name">
                 <input
@@ -82,7 +86,16 @@ class Login extends React.Component {
                 onClick={ this.logClick }
                 disabled={ buttonDisabled }
               >
-                Entrar
+                Play
+              </button>
+              <button
+                data-testid="btn-settings"
+                type="button"
+                name="btnSettings"
+                onClick={ this.logClickSet }
+                disabled={ buttonEnable }
+              >
+                Settings
               </button>
             </form>
           </div>
@@ -93,8 +106,10 @@ class Login extends React.Component {
 const mapDispatchToProps = (dispatch) => ({
   loginUser: (name, gravatarEmail) => dispatch(login(name, gravatarEmail)),
 });
+
 Login.propTypes = {
   history: propTypes.shape().isRequired,
   loginUser: propTypes.func.isRequired,
 };
+
 export default connect(null, mapDispatchToProps)(Login);

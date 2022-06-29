@@ -53,5 +53,4 @@ describe('Testando pagina de Login', () => {
         expect(queryBtnPlay()).not.toBeInTheDocument()
         expect(global.fetch).toHaveBeenCalled()
     })
-    
 })
