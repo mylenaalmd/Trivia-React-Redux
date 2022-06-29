@@ -7,21 +7,34 @@ class Game extends React.Component {
   state = {
     questions: [],
     loading: true,
+    answer: [],
   }
 
-  componentDidMount() {
-    this.getQuestions();
+  async componentDidMount() {
+    await this.getQuestions();
   }
 
   getQuestions = async () => {
+    const { history } = this.props;
+    const ascendente = 0.5;
+    const descendente = -1;
     const token = localStorage.getItem('token');
-    const responseApi = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`)
+    const responseFetch = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`)
       .then((response) => response.json())
-      .then((data) => data.results);
-    console.log(responseApi);
+      .then((data) => data);
+    if (responseFetch.response_code !== 0) {
+      history.push('/');
+    }
+    const responseApi = responseFetch.results;
+    const correta = { result: responseApi[0].correct_answer, id: 'correct-answer' };
+    const incorreta = responseApi[0].incorrect_answers
+      .map((item, index) => ({ result: item, id: `wrong-answer-${index}` }));
+    const alternativas = [...incorreta, correta]
+      .sort(() => ((Math.random() > ascendente) ? 1 : descendente));
     this.setState({
       questions: responseApi,
       loading: false,
+      answer: alternativas,
     });
   }
 
@@ -35,7 +48,7 @@ class Game extends React.Component {
 
   render() {
     const { userName } = this.props;
-    const { questions, loading } = this.state;
+    const { questions, loading, answer } = this.state;
     // console.log(questions);
     return (
       <div>
@@ -55,19 +68,19 @@ class Game extends React.Component {
             <p data-testid="question-category">{questions[0].category}</p>
             <p data-testid="question-text">{questions[0].question}</p>
             <div data-testid="answer-options">
-              <button
+              {/* <button
                 type="button"
                 data-testid="correct-answer"
               >
                 {questions[0].correct_answer}
-              </button>
-              {questions[0].incorrect_answers.map((element, index) => (
+              </button> */}
+              {answer.map((element) => (
                 <button
                   type="button"
-                  data-testid={ `wrong-answer-${index}` }
-                  key={ element }
+                  data-testid={ element.id }
+                  key={ element.id }
                 >
-                  {element}
+                  {element.result}
                 </button>))}
             </div>
           </div>)}
@@ -84,6 +97,7 @@ const mapStateToProps = (state) => ({
 Game.propTypes = {
   userName: propTypes.string.isRequired,
   userEmail: propTypes.string.isRequired,
+  history: propTypes.shape().isRequired,
 };
 
 export default connect(mapStateToProps)(Game);
