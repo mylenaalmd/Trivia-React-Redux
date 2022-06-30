@@ -6,23 +6,26 @@ import md5 from 'crypto-js/md5';
 const ascendente = 0.5;
 const descendente = -1;
 const responseCodeInvalid = 3;
-const tokenLocal = localStorage.getItem('token');
+
 class Game extends React.Component {
   state = {
     questions: [],
     loading: true,
     answer: [],
+    // tokenLocal: localStorage.getItem('token'),
   }
 
   async componentDidMount() {
-    this.getQuestions();
+    await this.getQuestions();
   }
 
   getQuestions = async () => {
     const { history } = this.props;
-    const responseFetch = await fetch(`https://opentdb.com/api.php?amount=5&token=${tokenLocal}`)
-      .then((response) => response.json());
-      // .then((data) => data);
+    const tokenLocal = await localStorage.getItem('token');
+    // const { tokenLocal } = this.state;
+    const responseInit = await fetch(`https://opentdb.com/api.php?amount=5&token=${tokenLocal}`);
+    const responseFetch = await responseInit.json();
+    // .then((data) => data);
     if (responseFetch.response_code === responseCodeInvalid) {
       localStorage.removeItem('token');
       history.push('/');
