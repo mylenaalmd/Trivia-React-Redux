@@ -15,7 +15,7 @@ class Game extends React.Component {
     timer: 30,
     isdisabled: false,
     // tokenLocal: localStorage.getItem('token'),
-
+    isVisible: false,
   }
 
   async componentDidMount() {
@@ -80,11 +80,14 @@ class Game extends React.Component {
     element.childNodes.forEach((node) => {
       node.classList.add('clicked');
     });
+    this.setState({
+      isVisible: true,
+    });
   }
 
   render() {
     const { userName } = this.props;
-    const { questions, loading, answer, timer, isdisabled } = this.state;
+    const { questions, loading, answer, timer, isdisabled, isVisible } = this.state;
     // console.log(questions);
     return (
       <div>
@@ -124,6 +127,13 @@ class Game extends React.Component {
                   {element.result}
                 </button>))}
             </div>
+            {isVisible && (
+              <button
+                type="button"
+                data-testid="btn-next"
+              >
+                Próxima Pergunta
+              </button>)}
           </div>)}
       </div>
     );
