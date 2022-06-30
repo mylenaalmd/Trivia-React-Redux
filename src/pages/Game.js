@@ -12,11 +12,34 @@ class Game extends React.Component {
     questions: [],
     loading: true,
     answer: [],
+    timer: 30,
+    isdisabled: false,
     // tokenLocal: localStorage.getItem('token'),
+
   }
 
   async componentDidMount() {
     await this.getQuestions();
+    const ONE_SECOND = 1000;
+    this.intervalId = setInterval(() => {
+      // audio.play();
+      // console.log('setando o state dentro do setInterval');
+      this.setState((prevState) => ({ timer: prevState.timer - 1 }));
+    }, ONE_SECOND);
+  }
+
+  shouldComponentUpdate() {
+    // const { timer } = nextState;
+    const { timer } = this.state;
+    // const value = -1;
+    if (timer === 0) {
+      // clearInterval(this.idtimer);
+      this.setState({
+        timer: 30,
+        isdisabled: true,
+      });
+    }
+    return true;
   }
 
   getQuestions = async () => {
@@ -61,7 +84,7 @@ class Game extends React.Component {
 
   render() {
     const { userName } = this.props;
-    const { questions, loading, answer } = this.state;
+    const { questions, loading, answer, timer, isdisabled } = this.state;
     // console.log(questions);
     return (
       <div>
@@ -78,6 +101,7 @@ class Game extends React.Component {
         </header>
         {loading ? <p>carregando....</p> : (
           <div>
+            <h3>{timer}</h3>
             <p data-testid="question-category">{questions[0].category}</p>
             <p data-testid="question-text">{questions[0].question}</p>
             <div id="answer-options" data-testid="answer-options">
@@ -95,6 +119,7 @@ class Game extends React.Component {
                   id={ element.id }
                   className={ element.id }
                   onClick={ () => this.handleAnswer() }
+                  disabled={ isdisabled }
                 >
                   {element.result}
                 </button>))}
