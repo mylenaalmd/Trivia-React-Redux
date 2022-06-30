@@ -36,17 +36,17 @@ class Login extends React.Component {
         localStorage.setItem('token', responseApi.token);
       };
 
-      logClick = () => {
+      logClick = async () => {
         const { history, loginUser } = this.props;
         const { name, email } = this.state;
         loginUser(name, email);
-        this.requestApi();
+        await this.requestApi();
         history.push('/game');
       };
 
       logClickSet = () => {
         const { history } = this.props;
-        this.logClick();
+        // this.logClick();
         history.push('/settings');
       };
 
