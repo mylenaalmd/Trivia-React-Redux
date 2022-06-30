@@ -3,6 +3,10 @@ import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
 
+const ascendente = 0.5;
+const descendente = -1;
+const responseCodeInvalid = 0;
+
 class Game extends React.Component {
   state = {
     questions: [],
@@ -10,19 +14,18 @@ class Game extends React.Component {
     answer: [],
   }
 
-  async componentDidMount() {
-    await this.getQuestions();
+  componentDidMount() {
+    this.getQuestions();
   }
 
   getQuestions = async () => {
     const { history } = this.props;
-    const ascendente = 0.5;
-    const descendente = -1;
-    const token = localStorage.getItem('token');
-    const responseFetch = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`)
-      .then((response) => response.json())
-      .then((data) => data);
-    if (responseFetch.response_code !== 0) {
+    const tokenLocal = localStorage.getItem('token');
+    const responseFetch = await fetch(`https://opentdb.com/api.php?amount=5&token=${tokenLocal}`)
+      .then((response) => response.json());
+      // .then((data) => data);
+    if (responseFetch.response_code === responseCodeInvalid) {
+      localStorage.removeItem('token');
       history.push('/');
     }
     const responseApi = responseFetch.results;
