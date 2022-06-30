@@ -1,8 +1,10 @@
 import React from 'react'
 import renderWithRouterAndRedux from './helpers/renderWithRouterAndRedux'
 import App from '../App' 
-import { screen, waitForElementToBeRemoved } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { createMemoryHistory } from 'history';
+
 
 const getInputName = () => screen.getByTestId('input-player-name')
 
@@ -10,7 +12,7 @@ const getInputEmail = () => screen.getByTestId('input-gravatar-email')
 
 const getBtnPlay = () => screen.getByTestId('btn-play')
 
-const queryBtnPlay = () => screen.queryByTestId('btn-play')
+const getBtnSettings = () => screen.getByTestId('btn-settings')
 
 
 describe('Testando pagina de Login', () => {
@@ -19,6 +21,8 @@ describe('Testando pagina de Login', () => {
         expect(getInputName()).toBeInTheDocument();
         expect(getInputEmail()).toBeInTheDocument();
         expect(getBtnPlay()).toBeInTheDocument();
+        expect(getBtnSettings()).toBeInTheDocument();
+        
     })
     it('botão desabilitado', () => {
         renderWithRouterAndRedux(<App />);
@@ -50,7 +54,15 @@ describe('Testando pagina de Login', () => {
         userEvent.type(getInputEmail(), 'a');
         expect(getBtnPlay()).toBeEnabled();
         userEvent.click(getBtnPlay());
-        expect(queryBtnPlay()).not.toBeInTheDocument()
         expect(global.fetch).toHaveBeenCalled()
     })
+
+    it('testando ação de configuracao', () => {
+        
+        const history = createMemoryHistory();
+        renderWithRouterAndRedux(<App />);
+    
+        userEvent.click(getBtnSettings());
+        history.push('/configuracao');
+      });
 })

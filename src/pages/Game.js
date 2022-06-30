@@ -52,6 +52,13 @@ class Game extends React.Component {
     return takeAvatar;
   }
 
+  handleAnswer = () => {
+    const element = document.getElementById('answer-options');
+    element.childNodes.forEach((node) => {
+      node.classList.add('clicked');
+    });
+  }
+
   render() {
     const { userName } = this.props;
     const { questions, loading, answer } = this.state;
@@ -73,7 +80,7 @@ class Game extends React.Component {
           <div>
             <p data-testid="question-category">{questions[0].category}</p>
             <p data-testid="question-text">{questions[0].question}</p>
-            <div data-testid="answer-options">
+            <div id="answer-options" data-testid="answer-options">
               {/* <button
                 type="button"
                 data-testid="correct-answer"
@@ -85,6 +92,9 @@ class Game extends React.Component {
                   type="button"
                   data-testid={ element.id }
                   key={ element.id }
+                  id={ element.id }
+                  className={ element.id }
+                  onClick={ () => this.handleAnswer() }
                 >
                   {element.result}
                 </button>))}

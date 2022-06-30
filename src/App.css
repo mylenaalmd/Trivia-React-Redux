@@ -61,3 +61,11 @@ body {
     transform: translate3d(4px, 0, 0);
   }
 }
+
+.clicked {
+  border: 3px solid red;
+}
+
+.correct-answer.clicked {
+  border: 3px solid rgb(6, 240, 15);
+}
