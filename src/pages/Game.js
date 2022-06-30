@@ -5,8 +5,8 @@ import md5 from 'crypto-js/md5';
 
 const ascendente = 0.5;
 const descendente = -1;
-const responseCodeInvalid = 0;
-
+const responseCodeInvalid = 3;
+const tokenLocal = localStorage.getItem('token');
 class Game extends React.Component {
   state = {
     questions: [],
@@ -14,31 +14,31 @@ class Game extends React.Component {
     answer: [],
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.getQuestions();
   }
 
   getQuestions = async () => {
     const { history } = this.props;
-    const tokenLocal = localStorage.getItem('token');
     const responseFetch = await fetch(`https://opentdb.com/api.php?amount=5&token=${tokenLocal}`)
       .then((response) => response.json());
       // .then((data) => data);
     if (responseFetch.response_code === responseCodeInvalid) {
       localStorage.removeItem('token');
       history.push('/');
+    } else {
+      const responseApi = responseFetch.results;
+      const correta = { result: responseApi[0].correct_answer, id: 'correct-answer' };
+      const incorreta = responseApi[0].incorrect_answers
+        .map((item, index) => ({ result: item, id: `wrong-answer-${index}` }));
+      const alternativas = [...incorreta, correta]
+        .sort(() => ((Math.random() > ascendente) ? 1 : descendente));
+      this.setState({
+        questions: responseApi,
+        loading: false,
+        answer: alternativas,
+      });
     }
-    const responseApi = responseFetch.results;
-    const correta = { result: responseApi[0].correct_answer, id: 'correct-answer' };
-    const incorreta = responseApi[0].incorrect_answers
-      .map((item, index) => ({ result: item, id: `wrong-answer-${index}` }));
-    const alternativas = [...incorreta, correta]
-      .sort(() => ((Math.random() > ascendente) ? 1 : descendente));
-    this.setState({
-      questions: responseApi,
-      loading: false,
-      answer: alternativas,
-    });
   }
 
   getGravatar = () => {
