@@ -15,7 +15,8 @@ class Feedback extends React.Component {
   render() {
     const { userName, score } = this.props;
     return (
-      <header>
+      <header className="App-header">
+        <h1 data-testid="feedback-text">FEEDBACK</h1>
         <img
           src={ this.getGravatar() }
           alt="gravatar"

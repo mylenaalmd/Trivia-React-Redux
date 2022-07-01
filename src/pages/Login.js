@@ -46,6 +46,7 @@ class Login extends React.Component {
 
       logClickSet = () => {
         const { history } = this.props;
+        // this.logClick();
         history.push('/settings');
       };
 
