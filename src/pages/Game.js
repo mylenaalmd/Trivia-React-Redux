@@ -15,25 +15,21 @@ class Game extends React.Component {
     answer: [],
     timer: 30,
     isdisabled: false,
-    difficulty: '',
-    // tokenLocal: localStorage.getItem('token'),
+    difficulty: [],
     isVisible: false,
+    questionNumber: 0,
   }
 
   async componentDidMount() {
     await this.getQuestions();
     const ONE_SECOND = 1000;
     this.intervalId = setInterval(() => {
-      // audio.play();
-      // console.log('setando o state dentro do setInterval');
       this.setState((prevState) => ({ timer: prevState.timer - 1 }));
     }, ONE_SECOND);
   }
 
   shouldComponentUpdate() {
-    // const { timer } = nextState;
     const { timer } = this.state;
-    // const value = -1;
     if (timer === 0) {
       // clearInterval(this.idtimer);
       this.setState({
@@ -47,25 +43,26 @@ class Game extends React.Component {
   getQuestions = async () => {
     const { history } = this.props;
     const tokenLocal = await localStorage.getItem('token');
-    // const { tokenLocal } = this.state;
     const responseInit = await fetch(`https://opentdb.com/api.php?amount=5&token=${tokenLocal}`);
     const responseFetch = await responseInit.json();
-    // .then((data) => data);
     if (responseFetch.response_code === responseCodeInvalid) {
       localStorage.removeItem('token');
       history.push('/');
     } else {
       const responseApi = responseFetch.results;
-      const correta = { result: responseApi[0].correct_answer, id: 'correct-answer' };
-      const incorreta = responseApi[0].incorrect_answers
-        .map((item, index) => ({ result: item, id: `wrong-answer-${index}` }));
-      const alternativas = [...incorreta, correta]
-        .sort(() => ((Math.random() > ascendente) ? 1 : descendente));
-      const dificuldade = responseApi[0].difficulty;
+      const dificuldade = responseApi.map((question) => question.difficulty);
+      const todasAlternativas = responseApi.map((question) => {
+        const correta = { result: question.correct_answer, id: 'correct-answer' };
+        const incorreta = question.incorrect_answers
+          .map((item, index) => ({ result: item, id: `wrong-answer-${index}` }));
+        // const alternativas =
+        return ([...incorreta, correta]
+          .sort(() => ((Math.random() > ascendente) ? 1 : descendente)));
+      });
       this.setState({
         questions: responseApi,
         loading: false,
-        answer: alternativas,
+        answer: todasAlternativas,
         difficulty: dificuldade,
       });
     }
@@ -91,15 +88,29 @@ class Game extends React.Component {
     });
   }
 
+  handleNextQuestion = () => {
+    const NUMBER_MAX_QUESTIONS = 4;
+    this.setState((prevState) => {
+      if (prevState.questionNumber === NUMBER_MAX_QUESTIONS) {
+        const { history } = this.props;
+        return history.push('/feedback');
+      }
+      return ({
+        questionNumber: prevState.questionNumber + 1,
+        timer: 30,
+      });
+    });
+  }
+
   setScore = () => {
-    const { timer, difficulty } = this.state;
+    const { timer, difficulty, questionNumber } = this.state;
     const { dispatch, score } = this.props;
     const easy = 1;
     const medium = 2;
     const hard = 3;
     const base = 10;
     let diff = 0;
-    switch (difficulty) {
+    switch (difficulty[questionNumber]) {
     case 'easy':
       diff = easy;
       break;
@@ -118,11 +129,18 @@ class Game extends React.Component {
 
   render() {
     const { userName, score } = this.props;
-    const { questions, loading, answer, timer, isdisabled, isVisible } = this.state;
+    const {
+      questions,
+      loading,
+      answer,
+      timer,
+      isdisabled,
+      isVisible,
+      questionNumber,
+    } = this.state;
     // console.log(questions);
     return (
       <div>
-
         <header>
           {/* {console.log(this.getGravatar())} */}
           <img
@@ -136,8 +154,8 @@ class Game extends React.Component {
         {loading ? <p>carregando....</p> : (
           <div>
             <h3>{timer}</h3>
-            <p data-testid="question-category">{questions[0].category}</p>
-            <p data-testid="question-text">{questions[0].question}</p>
+            <p data-testid="question-category">{questions[questionNumber].category}</p>
+            <p data-testid="question-text">{questions[questionNumber].question}</p>
             <div id="answer-options" data-testid="answer-options">
               {/* <button
                 type="button"
@@ -145,7 +163,7 @@ class Game extends React.Component {
               >
                 {questions[0].correct_answer}
               </button> */}
-              {answer.map((element) => (
+              {answer[questionNumber].map((element) => (
                 <button
                   type="button"
                   data-testid={ element.id }
@@ -162,6 +180,7 @@ class Game extends React.Component {
               <button
                 type="button"
                 data-testid="btn-next"
+                onClick={ this.handleNextQuestion }
               >
                 Próxima Pergunta
               </button>)}
