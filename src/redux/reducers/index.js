@@ -20,7 +20,7 @@ const INITIAL_STATE = {
   gravatarEmail: '',
 };
 
-const exampleReducer = (state = INITIAL_STATE, action) => {
+const player = (state = INITIAL_STATE, action) => {
   switch (action.type) {
   case SAVE_NAME:
     return {
@@ -52,6 +52,6 @@ const exampleReducer = (state = INITIAL_STATE, action) => {
   }
 };
 
-const rootReducer = combineReducers({ exampleReducer });
+const rootReducer = combineReducers({ player });
 
 export default rootReducer;
