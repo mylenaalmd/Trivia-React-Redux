@@ -13,9 +13,9 @@ export const saveEmail = (email) => ({
   type: SAVE_EMAIL,
   payload: email,
 });
-export const saveAssertions = (assertions) => ({
+export const saveAssertions = () => ({
   type: SAVE_ASSERTIONS,
-  payload: assertions,
+  // payload: assertions,
 });
 export const saveScore = (score) => ({
   type: SAVE_SCORE,

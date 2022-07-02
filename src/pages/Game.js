@@ -2,12 +2,11 @@ import React from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
-import { saveScore } from '../redux/actions';
+import { saveScore, saveAssertions } from '../redux/actions';
 
 const ascendente = 0.5;
 const descendente = -1;
 const responseCodeInvalid = 3;
-
 class Game extends React.Component {
   state = {
     questions: [],
@@ -18,12 +17,13 @@ class Game extends React.Component {
     difficulty: [],
     isVisible: false,
     questionNumber: 0,
+    isQuestionClicked: false,
   }
 
   async componentDidMount() {
     await this.getQuestions();
     const ONE_SECOND = 1000;
-    this.intervalId = setInterval(() => {
+    this.idTimer = setInterval(() => {
       this.setState((prevState) => ({ timer: prevState.timer - 1 }));
     }, ONE_SECOND);
   }
@@ -31,13 +31,16 @@ class Game extends React.Component {
   shouldComponentUpdate() {
     const { timer } = this.state;
     if (timer === 0) {
-      // clearInterval(this.idtimer);
       this.setState({
         timer: 30,
         isdisabled: true,
       });
     }
     return true;
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.idTimer);
   }
 
   getQuestions = async () => {
@@ -52,9 +55,17 @@ class Game extends React.Component {
       const responseApi = responseFetch.results;
       const dificuldade = responseApi.map((question) => question.difficulty);
       const todasAlternativas = responseApi.map((question) => {
-        const correta = { result: question.correct_answer, id: 'correct-answer' };
+        const correta = {
+          result: question.correct_answer,
+          id: 'correct-answer',
+          className: 'correct-answer-border',
+        };
         const incorreta = question.incorrect_answers
-          .map((item, index) => ({ result: item, id: `wrong-answer-${index}` }));
+          .map((item, index) => ({
+            result: item,
+            id: `wrong-answer-${index}`,
+            className: 'incorrect-answer-border',
+          }));
         // const alternativas =
         return ([...incorreta, correta]
           .sort(() => ((Math.random() > ascendente) ? 1 : descendente)));
@@ -77,14 +88,15 @@ class Game extends React.Component {
   }
 
   handleAnswer = (event) => {
-    const element = document.getElementById('answer-options');
+    // const element = document.getElementById('answer-options');
     const correct = event.target.id === 'correct-answer';
     if (correct) this.setScore();
-    element.childNodes.forEach((node) => {
-      node.classList.add('clicked');
-    });
+    // element.childNodes.forEach((node) => {
+    //   node.classList.add('clicked');
+    // });
     this.setState({
       isVisible: true,
+      isQuestionClicked: true,
     });
   }
 
@@ -98,6 +110,7 @@ class Game extends React.Component {
       return ({
         questionNumber: prevState.questionNumber + 1,
         timer: 30,
+        isQuestionClicked: false,
       });
     });
   }
@@ -125,6 +138,7 @@ class Game extends React.Component {
     }
     const total = score + (base + timer * diff);
     dispatch(saveScore(total));
+    dispatch(saveAssertions());
   };
 
   render() {
@@ -137,12 +151,12 @@ class Game extends React.Component {
       isdisabled,
       isVisible,
       questionNumber,
+      isQuestionClicked,
     } = this.state;
-    // console.log(questions);
+
     return (
       <div>
         <header>
-          {/* {console.log(this.getGravatar())} */}
           <img
             src={ this.getGravatar() }
             alt="gravatar"
@@ -157,19 +171,13 @@ class Game extends React.Component {
             <p data-testid="question-category">{questions[questionNumber].category}</p>
             <p data-testid="question-text">{questions[questionNumber].question}</p>
             <div id="answer-options" data-testid="answer-options">
-              {/* <button
-                type="button"
-                data-testid="correct-answer"
-              >
-                {questions[0].correct_answer}
-              </button> */}
               {answer[questionNumber].map((element) => (
                 <button
                   type="button"
                   data-testid={ element.id }
                   key={ element.id }
                   id={ element.id }
-                  className={ element.id }
+                  className={ isQuestionClicked ? element.className : '' }
                   onClick={ (e) => this.handleAnswer(e) }
                   disabled={ isdisabled }
                 >
@@ -189,7 +197,6 @@ class Game extends React.Component {
     );
   }
 }
-
 const mapStateToProps = (state) => ({
   userName: state.player.name,
   userEmail: state.player.gravatarEmail,
@@ -203,5 +210,4 @@ Game.propTypes = {
   score: propTypes.number.isRequired,
   dispatch: propTypes.func.isRequired,
 };
-
 export default connect(mapStateToProps)(Game);
