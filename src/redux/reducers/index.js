@@ -35,7 +35,7 @@ const player = (state = INITIAL_STATE, action) => {
   case SAVE_ASSERTIONS:
     return {
       ...state,
-      assertions: action.payload,
+      assertions: state.assertions + 1,
     };
   case SAVE_SCORE:
     return {
