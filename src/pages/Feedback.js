@@ -32,53 +32,53 @@ class Feedback extends React.Component {
   }
 
   // req 16
-  /*   redirectRanking = () => {
-    const { history } = this.props;
-    history.push('/ranking');
-  } */
+    redirectRanking = () => {
+      const { history } = this.props;
+      history.push('/ranking');
+    }
 
-  render() {
+    render() {
     // req 12-us e 13-sc e 14-ass
-    const { userName, scorePlayer, assertionsScore } = this.props;
-    return (
-      <header>
-        <img
-          src={ this.getGravatar() }
-          alt="gravatar"
-          data-testid="header-profile-picture"
-        />
-        <h3 data-testid="header-player-name">{userName}</h3>
-        {/* req 12-0 e 13-{score} */}
-        <h3 data-testid="header-score">{scorePlayer}</h3>
-        {/* req 13 */}
-        <h4 data-testid="feedback-text">
-          { this.totalAssertions() }
-        </h4>
-        {console.log('bla', assertionsScore)}
-        {console.log('bla', this.totalAssertions())}
-        {/* req 14 */}
-        <h2 data-testid="feedback-total-score">{scorePlayer}</h2>
-        <h3 data-testid="feedback-total-question">{assertionsScore}</h3>
-        {/* req 15 */}
-        <button
-          data-testid="btn-play-again"
-          type="button"
-          name="btnPlayAgain"
-          onClick={ this.logClick }
-        >
-          Play Again
-        </button>
-        {/* req 16 */}
-        {/*   <button
-          data-testid="btn-ranking"
-          type="button"
-          onClick={ this.redirectRanking }
-        >
-          Ranking
-        </button> */}
-      </header>
-    );
-  }
+      const { userName, scorePlayer, assertionsScore } = this.props;
+      return (
+        <header>
+          <img
+            src={ this.getGravatar() }
+            alt="gravatar"
+            data-testid="header-profile-picture"
+          />
+          <h3 data-testid="header-player-name">{userName}</h3>
+          {/* req 12-0 e 13-{score} */}
+          <h3 data-testid="header-score">{scorePlayer}</h3>
+          {/* req 13 */}
+          <h4 data-testid="feedback-text">
+            { this.totalAssertions() }
+          </h4>
+          {console.log('bla', assertionsScore)}
+          {console.log('bla', this.totalAssertions())}
+          {/* req 14 */}
+          <h2 data-testid="feedback-total-score">{scorePlayer}</h2>
+          <h3 data-testid="feedback-total-question">{assertionsScore}</h3>
+          {/* req 15 */}
+          <button
+            data-testid="btn-play-again"
+            type="button"
+            name="btnPlayAgain"
+            onClick={ this.logClick }
+          >
+            Play Again
+          </button>
+          {/* req 16  */}
+          <button
+            data-testid="btn-ranking"
+            type="button"
+            onClick={ this.redirectRanking }
+          >
+            Ranking
+          </button>
+        </header>
+      );
+    }
 }
 
 const mapStateToProps = (state) => ({
