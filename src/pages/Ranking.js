@@ -12,10 +12,8 @@ class Ranking extends React.Component {
   }
 
   getGravatar = (foto) => {
-    // const { userEmail } = this.props;
     const takeEmail = md5(foto).toString();
     const takeAvatar = `https://www.gravatar.com/avatar/${takeEmail}`;
-    // console.log(takeAvatar);
     return takeAvatar;
   }
 
