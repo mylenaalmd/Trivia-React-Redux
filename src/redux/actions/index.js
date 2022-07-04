@@ -3,6 +3,7 @@ export const SAVE_EMAIL = 'SAVE_EMAIL';
 export const SAVE_ASSERTIONS = 'SAVE_ASSERTIONS';
 export const SAVE_SCORE = 'SAVE_SCORE';
 export const LOGIN = 'LOGIN';
+export const RESET_GAME = 'RESET_GAME';
 
 export const saveName = (name) => ({
   type: SAVE_NAME,
@@ -28,4 +29,8 @@ export const login = (name, gravatarEmail) => ({
     name,
     gravatarEmail,
   },
+});
+
+export const resetGame = () => ({
+  type: RESET_GAME,
 });
