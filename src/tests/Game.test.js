@@ -2,7 +2,7 @@ import React from "react";
 import { screen, waitFor } from "@testing-library/react";
 import renderWithRouterAndRedux from "./helpers/renderWithRouterAndRedux";
 import userEvent from "@testing-library/user-event";
-import Game from "../Pages/Game";
+import Game from "../pages/Game";
 import { data, gravatar0, initialState, invalidInitialState, storageData } from "./mocks/GameMocks";
 import App from "../App";
 
