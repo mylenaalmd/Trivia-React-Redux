@@ -165,9 +165,9 @@ class Game extends React.Component {
           <h3 data-testid="header-player-name">{userName}</h3>
           <h3 data-testid="header-score">{score}</h3>
         </header>
-        {loading ? <p>carregando....</p> : (
+        {loading ? <p data-testid="loading">carregando....</p> : (
           <div>
-            <h3>{timer}</h3>
+            <h3 data-testid="timer">{timer}</h3>
             <p data-testid="question-category">{questions[questionNumber].category}</p>
             <p data-testid="question-text">{questions[questionNumber].question}</p>
             <div id="answer-options" data-testid="answer-options">
