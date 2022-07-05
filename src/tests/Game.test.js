@@ -3,7 +3,7 @@ import { screen, waitFor } from "@testing-library/react";
 import renderWithRouterAndRedux from "./helpers/renderWithRouterAndRedux";
 import userEvent from "@testing-library/user-event";
 import Game from "../Pages/Game";
-import { data, initialState, invalidInitialState, storageData } from "./mocks/GameMocks";
+import { data, gravatar0, initialState, invalidInitialState, storageData } from "./mocks/GameMocks";
 import App from "../App";
 
 const mockFetch = () => {
@@ -56,6 +56,7 @@ describe("Pagina do jogo", () => {
     expect(getWrongAnswer2()).toBeInTheDocument()
     expect(getWrongAnswer3()).toBeInTheDocument()
     expect(getProfile()).toBeInTheDocument()
+    expect(getProfile()).toHaveAttribute('src', gravatar0)
     expect(getPlayerName()).toBeInTheDocument()
     expect(getAnswerOptions()).toBeInTheDocument()
   });

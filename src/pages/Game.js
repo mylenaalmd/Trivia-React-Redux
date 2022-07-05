@@ -7,6 +7,11 @@ import { saveScore, saveAssertions } from '../redux/actions';
 const ascendente = 0.5;
 const descendente = -1;
 const responseCodeInvalid = 3;
+const easy = 1;
+const medium = 2;
+const hard = 3;
+const base = 10;
+
 class Game extends React.Component {
   state = {
     questions: [],
@@ -118,23 +123,13 @@ class Game extends React.Component {
   setScore = () => {
     const { timer, difficulty, questionNumber } = this.state;
     const { dispatch, score } = this.props;
-    const easy = 1;
-    const medium = 2;
-    const hard = 3;
-    const base = 10;
     let diff = 0;
-    switch (difficulty[questionNumber]) {
-    case 'easy':
+    if (difficulty[questionNumber] === 'easy') {
       diff = easy;
-      break;
-    case 'medium':
+    } else if (difficulty[questionNumber] === 'medium') {
       diff = medium;
-      break;
-    case 'hard':
+    } else {
       diff = hard;
-      break;
-    default:
-      diff = 0;
     }
     const total = score + (base + timer * diff);
     dispatch(saveScore(total));

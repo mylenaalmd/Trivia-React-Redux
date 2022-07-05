@@ -81,13 +81,13 @@ export const emailHash1 = md5('gustavo_cabral@gmail.com').toString();
 export const gravatar0 = `https://www.gravatar.com/avatar/${emailHash}`;
 export const gravatar1 = `https://www.gravatar.com/avatar/${emailHash1}`;
 export const storageData = [{
-  picture: gravatar1,
+  picture: gravatar0,
   name: 'Andre Teixeira',
   score: 26,
   assertions: 1,
 },
 {
-  picture: gravatar0,
+  picture: gravatar1,
   name: 'Gustavo Cabral',
   score: 45,
   assertions: 3,
